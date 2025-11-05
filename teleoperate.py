@@ -33,6 +33,8 @@ if __name__ == "__main__":
     parser.add_argument("--follower_id2", "-fi2", required=False, help="Unique identifier for follower robot 2")
     parser.add_argument("--leader_port2", "-lp2", required=False, help="Serial port for leader arm 2 (e.g. USB3)")
     parser.add_argument("--leader_id2", "-li2", required=False, help="Unique identifier for leader arm 2")
+
+    parser.add_argument("--calibration_dir", "-cd", required=False, default="calibration", help="Path to calibration directory")
     
     args = parser.parse_args()
 
@@ -40,10 +42,12 @@ if __name__ == "__main__":
     robot_config1 = SO101FollowerConfig(
         port=f"/dev/tty{args.follower_port1}",
         id=args.follower_id1,
+        calibration_dir=args.calibration_dir,
     )
     teleop_config1 = SO101LeaderConfig(
         port=f"/dev/tty{args.leader_port1}",
         id=args.leader_id1,
+        calibration_dir=args.calibration_dir,
     )
     robot1 = SO101Follower(robot_config1)
     teleop_device1 = SO101Leader(teleop_config1)
@@ -57,10 +61,12 @@ if __name__ == "__main__":
         robot_config2 = SO101FollowerConfig(
             port=f"/dev/tty{args.follower_port2}",
             id=args.follower_id2,
+            calibration_dir=args.calibration_dir,
         )
         teleop_config2 = SO101LeaderConfig(
             port=f"/dev/tty{args.leader_port2}",
             id=args.leader_id2,
+            calibration_dir=args.calibration_dir,
         )
         robot2 = SO101Follower(robot_config2)
         teleop_device2 = SO101Leader(teleop_config2)
