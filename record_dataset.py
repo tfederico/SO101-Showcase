@@ -28,7 +28,7 @@ from lerobot.teleoperators.so100_leader.so100_leader import SO100Leader
 from lerobot.utils.control_utils import init_keyboard_listener
 from lerobot.utils.utils import log_say
 from lerobot.utils.visualization_utils import init_rerun
-from lerobot.record import record_loop
+from lerobot.scripts.lerobot_record import record_loop
 
 # Recording configuration parameters
 NUM_EPISODES = 5                    # Total number of episodes to record
