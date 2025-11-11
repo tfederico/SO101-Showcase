@@ -22,9 +22,9 @@ Controls:
 from lerobot.cameras.opencv.configuration_opencv import OpenCVCameraConfig
 from lerobot.datasets.lerobot_dataset import LeRobotDataset
 from lerobot.datasets.utils import hw_to_dataset_features
-from lerobot.robots.so100_follower import SO100Follower, SO100FollowerConfig
-from lerobot.teleoperators.so100_leader.config_so100_leader import SO100LeaderConfig
-from lerobot.teleoperators.so100_leader.so100_leader import SO100Leader
+from lerobot.robots.so100_follower import SO101Follower, SO101FollowerConfig
+from lerobot.teleoperators.so100_leader.config_so100_leader import SO101LeaderConfig
+from lerobot.teleoperators.so100_leader.so100_leader import SO101Leader
 from lerobot.utils.control_utils import init_keyboard_listener
 from lerobot.utils.utils import log_say
 from lerobot.utils.visualization_utils import init_rerun
@@ -42,21 +42,21 @@ TASK_DESCRIPTION = "My task description"  # Description of the task being demons
 camera_config = {"front": OpenCVCameraConfig(index_or_path=0, width=640, height=480, fps=FPS)}
 
 # Configure the follower robot (the arm that performs the task)
-robot_config = SO100FollowerConfig(
+robot_config = SO101FollowerConfig(
     port="/dev/tty.usbmodem58760434471",     # Serial port for follower arm
     id="my_awesome_follower_arm",             # Unique identifier for the robot
     cameras=camera_config                      # Attach camera configuration
 )
 
 # Configure the leader arm (used for teleoperation control)
-teleop_config = SO100LeaderConfig(
+teleop_config = SO101LeaderConfig(
     port="/dev/tty.usbmodem585A0077581",      # Serial port for leader arm
     id="my_awesome_leader_arm"                 # Unique identifier for teleop device
 )
 
 # Initialize the robot and teleoperator instances
-robot = SO100Follower(robot_config)
-teleop = SO100Leader(teleop_config)
+robot = SO101Follower(robot_config)
+teleop = SO101Leader(teleop_config)
 
 # Configure the dataset features
 # Convert robot hardware features to dataset-compatible format
@@ -70,6 +70,7 @@ dataset = LeRobotDataset.create(
     fps=FPS,                                     # Recording frame rate
     features=dataset_features,                   # Data schema for actions and observations
     robot_type=robot.name,                       # Robot type identifier
+    root="./recorded_dataset",                   # Local directory to store dataset
     use_videos=True,                             # Save camera data as videos (compressed)
     image_writer_threads=4,                      # Number of threads for parallel image writing
 )
