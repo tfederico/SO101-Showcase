@@ -17,6 +17,7 @@ import argparse
 import threading
 from lerobot.teleoperators.so101_leader import SO101LeaderConfig, SO101Leader
 from lerobot.robots.so101_follower import SO101FollowerConfig, SO101Follower
+import pathlib
 
 def operate_robot_pair(robot, teleop_device, pair_name):
     """
@@ -71,18 +72,20 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
 
+    calib_dir = pathlib.Path(args.calibration_dir)
+
     # Setup Pair 1 (required)
     # Configure follower robot 1
     robot_config1 = SO101FollowerConfig(
         port=f"/dev/tty{args.follower_port1}",
         id=args.follower_id1,
-        calibration_dir=args.calibration_dir,
+        calibration_dir=calib_dir,
     )
     # Configure leader arm 1
     teleop_config1 = SO101LeaderConfig(
         port=f"/dev/tty{args.leader_port1}",
         id=args.leader_id1,
-        calibration_dir=args.calibration_dir,
+        calibration_dir=calib_dir,
     )
     # Initialize and connect pair 1
     robot1 = SO101Follower(robot_config1)
@@ -99,13 +102,13 @@ if __name__ == "__main__":
         robot_config2 = SO101FollowerConfig(
             port=f"/dev/tty{args.follower_port2}",
             id=args.follower_id2,
-            calibration_dir=args.calibration_dir,
+            calibration_dir=calib_dir,
         )
         # Configure leader arm 2
         teleop_config2 = SO101LeaderConfig(
             port=f"/dev/tty{args.leader_port2}",
             id=args.leader_id2,
-            calibration_dir=args.calibration_dir,
+            calibration_dir=calib_dir,
         )
         # Initialize and connect pair 2
         robot2 = SO101Follower(robot_config2)
