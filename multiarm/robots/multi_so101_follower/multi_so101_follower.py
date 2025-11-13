@@ -48,14 +48,14 @@ class MultiSO101Follower(Robot):
         # Initialize arms based on configuration
         self.arms: dict[str, SO101Follower] = {}
         
-        for arm_name, arm_config_dict in config.arms.items():
+        for arm_name, port in config.arm_ports.items():
             arm_config = SO101FollowerConfig(
                 id=f"{config.id}_{arm_name}" if config.id else None,
                 calibration_dir=config.calibration_dir,
-                port=arm_config_dict["port"],
-                disable_torque_on_disconnect=arm_config_dict.get("disable_torque_on_disconnect", True),
-                max_relative_target=arm_config_dict.get("max_relative_target", None),
-                use_degrees=arm_config_dict.get("use_degrees", True),
+                port=port,
+                disable_torque_on_disconnect=config.arm_disable_torque_on_disconnect.get(arm_name, True),
+                max_relative_target=config.arm_max_relative_target.get(arm_name, None),
+                use_degrees=config.arm_use_degrees.get(arm_name, True),
                 cameras={},
             )
             self.arms[arm_name] = SO101Follower(arm_config)
