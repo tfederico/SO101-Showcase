@@ -20,6 +20,8 @@ Controls:
     (specific keys configured in keyboard listener)
 """
 from lerobot.cameras.opencv.configuration_opencv import OpenCVCameraConfig
+from lerobot.cameras.realsense.configuration_realsense import RealSenseCameraConfig
+from lerobot.cameras.configs import ColorMode, Cv2Rotation
 from lerobot.datasets.lerobot_dataset import LeRobotDataset
 from multiarm.robots.multi_so101_follower import MultiSO101Follower, MultiSO101FollowerConfig
 from multiarm.teleoperators.multi_so101_leader import MultiSO101Leader, MultiSO101LeaderConfig
@@ -43,8 +45,8 @@ from lerobot.datasets.utils import combine_feature_dicts
 # Dataset settings
 REPO_ID = "your_username/my_multi_arm_dataset"
 TASK = "Multi-arm pick and place task"
-NUM_EPISODES = 5
-FPS = 30
+NUM_EPISODES = 1
+FPS = 15
 
 # Hardware ports for follower arms
 ARM_PORTS = {
@@ -66,6 +68,7 @@ LEADER_PORTS = {
 CAMERAS = {
     "wrist_left": 2,
     "wrist_right": 4,
+    "realsense_top": 243322073128,  # RealSense camera serial number
 }
 
 # Recording duration (seconds)
@@ -82,11 +85,23 @@ def main():
     init_logging()
     init_rerun(session_name="recording")
     
-    # Setup cameras
-    cameras = {
-        name: OpenCVCameraConfig(index_or_path=idx, width=640, height=480, fps=FPS)
-        for name, idx in CAMERAS.items()
-    }
+    # Setup cameras (use different config for realsense cameras)
+    cameras = {}
+    for name, idx in CAMERAS.items():
+        if "realsense" in name.lower():
+            # Realsense: higher resolution
+            cameras[name] = RealSenseCameraConfig( # Configure the RealSense camera with desired parameters
+                serial_number_or_name=idx,  # Unique serial number of the RealSense camera
+                fps=FPS,                                 # Frame rate: 15 frames per second
+                width=640,                              # Image width in pixels
+                height=480,                             # Image height in pixels
+                color_mode=ColorMode.RGB,               # Color format: RGB (Red-Green-Blue)
+                use_depth=False,                         # Enable depth sensing capability
+                rotation=Cv2Rotation.NO_ROTATION        # No image rotation applied
+            )
+        else:
+            # Default cameras
+            cameras[name] = OpenCVCameraConfig(index_or_path=idx, width=640, height=480, fps=FPS)
     
     # Create multi-arm robot and teleop
     robot = MultiSO101Follower(MultiSO101FollowerConfig(
@@ -128,7 +143,7 @@ def main():
     dataset = LeRobotDataset.create(
         REPO_ID,
         fps=FPS,
-        root="./datasets/trial_multi_arm",
+        root="./datasets/trial_multi_arm_1",
         robot_type=robot.name,
         features=features,
         use_videos=True,
