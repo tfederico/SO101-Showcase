@@ -17,7 +17,7 @@ from lerobot.cameras.configs import ColorMode, Cv2Rotation
 
 # Configure the RealSense camera with desired parameters
 config = RealSenseCameraConfig(
-    serial_number_or_name="233522074606",  # Unique serial number of the RealSense camera
+    serial_number_or_name="243322073128",  # Unique serial number of the RealSense camera
     fps=15,                                 # Frame rate: 15 frames per second
     width=640,                              # Image width in pixels
     height=480,                             # Image height in pixels
