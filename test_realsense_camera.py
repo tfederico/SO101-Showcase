@@ -14,6 +14,7 @@ Note:
 from lerobot.cameras.realsense.configuration_realsense import RealSenseCameraConfig
 from lerobot.cameras.realsense.camera_realsense import RealSenseCamera
 from lerobot.cameras.configs import ColorMode, Cv2Rotation
+import matplotlib.pyplot as plt
 
 # Configure the RealSense camera with desired parameters
 config = RealSenseCameraConfig(
@@ -42,6 +43,13 @@ try:
     # Display the dimensions of captured frames for verification
     print("Color frame shape:", color_frame.shape)  # Expected: (480, 640, 3) for RGB
     print("Depth map shape:", depth_map.shape)      # Expected: (480, 640) for depth
+    
+    # Visualize the RGB image
+    plt.figure(figsize=(10, 8))
+    plt.imshow(color_frame)
+    plt.title("RealSense RGB Image")
+    plt.axis('off')
+    plt.show()
 finally:
     # Always disconnect the camera to release hardware resources
     camera.disconnect()
