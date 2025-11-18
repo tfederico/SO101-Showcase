@@ -73,7 +73,7 @@ CAMERAS = {
 }
 
 # Recording duration (seconds)
-EPISODE_TIME = 60
+EPISODE_TIME = 120
 CALIB_DIR = pathlib.Path("calibration")
 
 
