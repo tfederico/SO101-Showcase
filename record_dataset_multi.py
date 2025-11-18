@@ -68,7 +68,7 @@ LEADER_PORTS = {
 CAMERAS = {
     "wrist_left": 2,
     "wrist_right": 4,
-    "realsense_top": 243322073128,  # RealSense camera serial number
+    "realsense_top": "243322073128",  # RealSense camera serial number
 }
 
 # Recording duration (seconds)
