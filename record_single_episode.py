@@ -47,7 +47,7 @@ from lerobot.datasets.utils import combine_feature_dicts
 # Dataset settings
 BASE_REPO_ID = "your_username/multi_arm_episode"  # Will append timestamp
 TASK = "Multi-arm pick and place task"
-FPS = 15
+FPS = 30
 
 # Hardware ports for follower arms
 ARM_PORTS = {
@@ -67,9 +67,9 @@ LEADER_PORTS = {
 
 # Camera settings (camera_name: index)
 CAMERAS = {
-    "wrist_left": 2,
-    "wrist_right": 4,
-    "realsense_top": 1,
+    "wrist_left": 10,
+    "wrist_right": 8,
+    "realsense_top": "243322073128",  # Example serial number for RealSense
 }
 
 # Recording duration (seconds)
@@ -98,7 +98,7 @@ def main():
         if "realsense" in name.lower():
             # Realsense: higher resolution
             cameras[name] = RealSenseCameraConfig(
-                serial_number_or_name="243322073128",  # Unique serial number of the RealSense camera
+                serial_number_or_name=idx,  # Unique serial number of the RealSense camera
                 fps=FPS,                                 # Frame rate: 15 frames per second
                 width=640,                              # Image width in pixels
                 height=480,                             # Image height in pixels
