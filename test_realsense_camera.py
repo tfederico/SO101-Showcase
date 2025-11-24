@@ -19,9 +19,9 @@ import matplotlib.pyplot as plt
 # Configure the RealSense camera with desired parameters
 config = RealSenseCameraConfig(
     serial_number_or_name="243322073128",  # Unique serial number of the RealSense camera
-    fps=15,                                 # Frame rate: 15 frames per second
-    width=640,                              # Image width in pixels
-    height=480,                             # Image height in pixels
+    fps=30,                                 # Frame rate: 15 frames per second
+    width=1280,                              # Image width in pixels
+    height=720,                             # Image height in pixels
     color_mode=ColorMode.RGB,               # Color format: RGB (Red-Green-Blue)
     use_depth=True,                         # Enable depth sensing capability
     rotation=Cv2Rotation.NO_ROTATION        # No image rotation applied
