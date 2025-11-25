@@ -38,6 +38,7 @@ from lerobot.datasets.pipeline_features import (
     create_initial_features,
 )
 from lerobot.datasets.utils import combine_feature_dicts
+import json
 
 
 # ============================================================================
@@ -65,12 +66,18 @@ LEADER_PORTS = {
     # "center": "/dev/tty.usbmodem585A0077583",
 }
 
-# Camera settings (camera_name: index)
-CAMERAS = {
-    "wrist_left": 10,
-    "wrist_right": 8,
-    "realsense_top": "243322073128",  # Example serial number for RealSense
-}
+# Camera settings (camera_name: index) - read from configs.json if available
+
+CAMERAS = {}
+
+
+with open("configs.json") as f:
+    cfg = json.load(f)
+cams = cfg.get("cameras", {})
+for group in ("wrist", "top"):
+    for name, val in cams.get(group, {}).items():
+        key = f"{group}_{name}" if group == "wrist" else f"realsense_{name}"
+        CAMERAS[key] = int(val) if isinstance(val, str) and val.isdigit() else val
 
 # Recording duration (seconds)
 EPISODE_TIME = 120
