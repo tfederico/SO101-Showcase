@@ -77,7 +77,7 @@ cams = cfg.get("cameras", {})
 for group in ("wrist", "top"):
     for name, val in cams.get(group, {}).items():
         key = f"{group}_{name}" if group == "wrist" else f"realsense_{name}"
-        CAMERAS[key] = int(val) if isinstance(val, str) and val.isdigit() else val
+        CAMERAS[key] = val
 
 # Recording duration (seconds)
 EPISODE_TIME = 120
