@@ -1,0 +1,11 @@
+{
+    "cameras": {
+        "wrist": {
+            "left": 4,
+            "right": 2
+        },
+        "top": {
+            "realsense": "243322073128"
+        }
+    }
+}
