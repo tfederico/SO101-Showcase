@@ -39,7 +39,14 @@ from lerobot.datasets.pipeline_features import (
 )
 from lerobot.datasets.utils import combine_feature_dicts
 import json
+import argparse
 
+parser = argparse.ArgumentParser(description="Record a single episode for a multi-arm SO101 setup.")
+parser.add_argument("--group_id", type=str, required=True, help="ID of the group for this recording session")
+parser.add_argument("--wall", type=bool, required=True, help="Whether wall is used or not in the experiment")
+args = parser.parse_args()
+GROUP_ID = args.group_id
+WALL = args.wall
 
 # ============================================================================
 # CONFIGURATION - Change these settings
@@ -95,7 +102,7 @@ def main():
     # Generate unique dataset name with timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     repo_id = f"{BASE_REPO_ID}_{timestamp}"
-    dataset_root = f"./datasets/single_episodes/episode_{timestamp}"
+    dataset_root = f"./datasets/single_episodes/episode_{timestamp}_{GROUP_ID}_{'wall' if WALL else 'noWall'}"
     
     log_say(f"Recording single episode to: {repo_id}")
     
