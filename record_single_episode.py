@@ -168,7 +168,7 @@ def main():
         robot_type=robot.name,
         features=features,
         use_videos=True,
-        image_writer_threads=4 * len(cameras),
+        image_writer_threads=6 * len(cameras),
     )
     
     # Setup keyboard controls
