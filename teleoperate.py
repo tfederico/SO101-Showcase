@@ -19,7 +19,7 @@ from lerobot.teleoperators.so101_leader import SO101LeaderConfig, SO101Leader
 from lerobot.robots.so101_follower import SO101FollowerConfig, SO101Follower
 import pathlib
 
-def operate_robot_pair(robot, teleop_device, pair_name):
+def operate_robot_pair(robot, teleop_device, pair_name, stop_event):
     """
     Run teleoperation loop for a single robot pair.
     
@@ -31,19 +31,20 @@ def operate_robot_pair(robot, teleop_device, pair_name):
         robot (SO101Follower): The follower robot that will execute actions
         teleop_device (SO101Leader): The leader arm that provides control input
         pair_name (str): Identifier for this robot pair (e.g., "Pair 1")
+        stop_event (threading.Event): Event to signal thread shutdown
     """
     # Capture initial position to return to on exit
     initial_position = robot.get_observation()
     
     try:
         # Main teleoperation loop: continuously mirror leader movements to follower
-        while True:
+        while not stop_event.is_set():
             # Read current position/action from leader arm
             action = teleop_device.get_action()
             # Send action to follower robot
             robot.send_action(action)
-    except KeyboardInterrupt:
-        print(f"\n{pair_name} teleoperation interrupted by user")
+    except Exception as e:
+        print(f"\n{pair_name} encountered error: {e}")
     finally:
         # Cleanup: return to initial position and disconnect
         print(f"Moving {pair_name} robot back to initial position...")
@@ -74,6 +75,9 @@ if __name__ == "__main__":
 
     calib_dir = pathlib.Path(args.calibration_dir)
 
+    # Create stop event for coordinating thread shutdown
+    stop_event = threading.Event()
+
     # Setup Pair 1 (required)
     # Configure follower robot 1
     robot_config1 = SO101FollowerConfig(
@@ -94,7 +98,7 @@ if __name__ == "__main__":
     teleop_device1.connect()
 
     # Create thread list with pair 1
-    threads = [threading.Thread(target=operate_robot_pair, args=(robot1, teleop_device1, "Pair 1"), daemon=False)]
+    threads = [threading.Thread(target=operate_robot_pair, args=(robot1, teleop_device1, "Pair 1", stop_event), daemon=False)]
 
     # Setup Pair 2 if all required arguments are provided
     if args.follower_port2 and args.follower_id2 and args.leader_port2 and args.leader_id2:
@@ -117,8 +121,9 @@ if __name__ == "__main__":
         teleop_device2.connect()
         
         # Add pair 2 thread to list
-        threads.append(threading.Thread(target=operate_robot_pair, args=(robot2, teleop_device2, "Pair 2"), daemon=False))
+        threads.append(threading.Thread(target=operate_robot_pair, args=(robot2, teleop_device2, "Pair 2", stop_event), daemon=False))
 
+    print("Starting teleop")
     # Start all teleoperation threads for parallel operation
     for thread in threads:
         thread.start()
@@ -128,4 +133,9 @@ if __name__ == "__main__":
         for thread in threads:
             thread.join()
     except KeyboardInterrupt:
-        print("\nAll teleoperation sessions interrupted by user")
+        print("\nShutting down all teleoperation sessions...")
+        stop_event.set()  # Signal all threads to stop
+        # Wait for threads to finish cleanup
+        for thread in threads:
+            thread.join(timeout=5.0)
+        print("All sessions stopped")
