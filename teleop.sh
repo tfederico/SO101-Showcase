@@ -1,0 +1,1 @@
+python teleoperate.py -fp1 ACM1 -fi1 B -lp1 ACM0 -li1 A -fp2 ACM2 -fi2 C -lp2 ACM3 -li2 D
